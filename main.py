@@ -53,8 +53,8 @@ AllInlinemarkup.add(*items)
 
 def GenerateFullSchedule():
     res = ""
-    for i in range(7):
-        res += cfg.getData(i) + ("\n\n" if i < 6 else "")
+    for i in range(6):
+        res += cfg.getData(i) + ("\n\n" if i < 5 else "")
     return res
 
 def GetDayOfWeek():
@@ -95,27 +95,28 @@ def welcome(message):
 @bot.message_handler(content_types=['text'])
 def mes(message):
     if message.chat.type == 'private':
+        mes = message.text.lower()
 
-        if message.text == 'Расписание':
+        if mes == 'расписание':
             bot.send_message(message.chat.id, 'Какое?', reply_markup=scheduleMarkup)
 
-        elif message.text == 'Сегодня':
+        elif mes == 'сегодня':
             bot.send_message(message.chat.id, cfg.getData(GetDayOfWeek()), reply_markup=mainMarkup)
 
-        elif message.text == 'Завтра':
+        elif mes == 'завтра':
             bot.send_message(message.chat.id, cfg.getData(GetTomorrow()), reply_markup=mainMarkup)
 
-        elif message.text == 'Полное расписание':
+        elif mes == 'полное расписание':
             bot.send_message(message.chat.id, GenerateFullSchedule(), reply_markup=mainMarkup)
 
-        elif message.text == "Выбрать день недели":
+        elif mes == "выбрать день недели":
             bot.send_message(message.chat.id, 'День недели?', reply_markup=AllInlinemarkup)
 
-        elif message.text.lower() == "спасибо":
+        elif mes == "спасибо":
             bot.send_message(message.chat.id, 'Позязя)) (^_^)')
 
         else:
-            bot.send_message(message.chat.id, 'Пользуйся к  нопочками)')
+            bot.send_message(message.chat.id, 'Пользуйся кнопочками)')
 
 
 

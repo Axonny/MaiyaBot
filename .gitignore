@@ -129,5 +129,6 @@ dmypy.json
 .pyre/
 
 # my ignores
+config.json
 examples.py
 trash.py

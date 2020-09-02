@@ -6,8 +6,7 @@ class Config():
     def __init__(self):
         with open('config.json', 'r', encoding='utf-8') as fh:
             self.data = json.load(fh)
-        self._token = None
-        self._token = self.data["token"]
+        self._token = self.data.get("token",None)
 
     def save(self):
         with open('config.json', 'w', encoding='utf-8') as fh:
