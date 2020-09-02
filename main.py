@@ -18,34 +18,31 @@ timePickTomorrow = (20,00)
 
 # <Markups>
 
+# generate methods
+
+def ReplyKeyboardGenerate(*args):
+    for i in args:
+        yield types.KeyboardButton(i)
+
+def InlineKeyboardGenerate(*args):
+    for i in args:
+        yield types.InlineKeyboardButton(i[0],callback_data=i[1])
+
 # Main markups
 mainMarkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-items = [
-types.KeyboardButton("Расписание")
-]
-mainMarkup.add(*items)
+items = ReplyKeyboardGenerate("Расписание")
+mainMarkup.add(*[i for i in items])
 
 # Schedule markup
 scheduleMarkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-items = [
-types.KeyboardButton("Сегодня"),
-types.KeyboardButton("Завтра"),
-types.KeyboardButton("Полное расписание"),
-types.KeyboardButton("Выбрать день недели")
-]
-scheduleMarkup.add(*items)
+items = ReplyKeyboardGenerate("Сегодня", "Завтра", "Полное расписание", "Выбрать день недели")
+scheduleMarkup.add(*[i for i in items])
 
 # All week markup
 AllInlinemarkup = types.InlineKeyboardMarkup(row_width=1)
-items = [
-types.InlineKeyboardButton("Понедельник", callback_data="mon"),
-types.InlineKeyboardButton("Вторник", callback_data="tue"),
-types.InlineKeyboardButton("Среда", callback_data="wed"),
-types.InlineKeyboardButton("Четверг", callback_data="thu"),
-types.InlineKeyboardButton("Пятница", callback_data="fri"),
-types.InlineKeyboardButton("Суббота", callback_data="sat")
-]
-AllInlinemarkup.add(*items)
+items = InlineKeyboardGenerate( ("Понедельник", "mon"), ("Вторник", "tue"), ("Среда", "wed"),
+("Четверг", "thu"), ("Пятница", "fri"), ("Суббота", "sat"))
+AllInlinemarkup.add(*[i for i in items])
 
 # </Markups>
 
@@ -87,7 +84,8 @@ Thread(target=Timer).start()
 @bot.message_handler(commands=['start'])
 def welcome(message):
 
-    bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>, бот созданный чтобы помочь с учебой.".format(message.from_user, bot.get_me()),
+    bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\n\
+Я - <b>{1.first_name}</b>, бот созданный чтобы помочь с учебой.".format(message.from_user, bot.get_me()),
 		parse_mode='html', reply_markup=mainMarkup)
 
 
@@ -125,7 +123,8 @@ def callback_inline(call):
     try:
         if call.message:
             if call.data in DaysOfWeek:
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='День недели?',reply_markup=None)
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                text='День недели?',reply_markup=None)
                 bot.send_message(call.message.chat.id, cfg.getDataStr(call.data), reply_markup=mainMarkup)
 
 
