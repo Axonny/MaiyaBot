@@ -1,36 +1,40 @@
 import json
 
-class Config():
 
+class Config():
 
     def __init__(self):
         with open('config.json', 'r', encoding='utf-8') as fh:
             self.data = json.load(fh)
-        self._token = self.data.get("token",None)
+        self._token = self.data.get("token", None)
+        self.days_of_week = ["mon", "tue", "wed", "thu", "fri", "sat", "san"]
 
     def save(self):
         with open('config.json', 'w', encoding='utf-8') as fh:
-            fh.write(json.dumps(self.data,indent=2,ensure_ascii=False))
+            fh.write(json.dumps(self.data, indent=2, ensure_ascii=False))
 
-    def getData(self,numberOfWeek):
-        param = self.numToWeek(numberOfWeek)
-        return self.data[param]
+    def getData(self, number_of_week: int, parity: str = None) -> str:
+        param = self.numToWeek(number_of_week)
+        if not parity:
+            parity = self.getDataStr("current_week")
+        return self.data[parity][param]
 
-    def getDataStr(self,str):
+    def getDataStr(self, str: str) -> str:
         return self.data[str]
 
     @property
-    def token(self):
+    def token(self) -> str:
         if(not self._token):
             raise ValueError("token is null")
         return self._token
 
-    def numToWeek(self,n):
-        if n == 0: return "mon"
-        if n == 1: return "tue"
-        if n == 2: return "wed"
-        if n == 3: return "thu"
-        if n == 4: return "fri"
-        if n == 5: return "sat"
-        if n == 6: return "san"
-        raise ValueError("Incorrect Number")
+    def numToWeek(self, number_of_week: int) -> None:
+        return self.days_of_week[number_of_week]
+
+    def swapParity() -> str:
+        parity = self.getDataStr("current_week")
+        if(parity == "odd"):
+            self.data["current_week"] = "even"
+        else:
+            self.data["current_week"] = "odd"
+        self.save()
