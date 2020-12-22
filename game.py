@@ -7,7 +7,7 @@ import random
 parser = YandexImage()
 
 def save(name, link):
-    with open(f"test/{name}","wb") as f:
+    with open(f"img/{name}","wb") as f:
         b = requests.get(link)
         f.write(b.content)
 
