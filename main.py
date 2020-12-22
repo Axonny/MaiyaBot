@@ -31,8 +31,13 @@ gameMarkup.add(*[i for i in items])
 
 
 def send_next_img(chat_id):
-    img_name = words[random.randint(0, len(words))]
-    name = game.get_img(img_name)
+    while True:
+        try:
+            img_name = words[random.randint(0, len(words) - 1)]
+            name = game.get_img(img_name)
+            break
+        except:
+            pass
     bot.send_photo(chat_id, photo=game.resize_image(f"img/{name}"))
     users[chat_id]["last_img"] = name
     users[chat_id]["answer"] = img_name
@@ -49,7 +54,7 @@ def clear_img(name):
 def welcome(message):
     bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\n\
 Я - <b>{1.first_name}</b>, бот созданный @KawaiiAxonny.".format(message.from_user, bot.get_me()),
-		parse_mode='html', reply_markup=(mainMarkup if message.chat.id == myID else None))
+		parse_mode='html', reply_markup=mainMarkup)
 
 @bot.message_handler(content_types=['text'])
 def mes(message):

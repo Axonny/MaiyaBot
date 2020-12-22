@@ -18,7 +18,7 @@ def generate_name():
 def get_img(name):
     images = parser.search(name, parser.size.large)
     name = generate_name() + ".jpg"
-    save(name, images[random.randint(0, len(images))].url)
+    save(name, images[random.randint(0, len(images) - 1)].url)
     return name
 
 def resize_image(input):
