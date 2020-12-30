@@ -2,6 +2,7 @@ import telebot
 import game
 import os
 import random
+import time
 from telebot import types
 from config import Config
 
@@ -31,22 +32,11 @@ gameMarkup.add(*[i for i in items])
 
 
 def send_next_img(chat_id):
-    while True:
-        try:
-            img_name = words[random.randint(0, len(words) - 1)]
-            name = game.get_img(img_name)
-            break
-        except:
-            pass
-    bot.send_photo(chat_id, photo=game.resize_image(f"img/{name}"))
-    users[chat_id]["last_img"] = name
+    img_name = random.choice(os.listdir("img"))
+    name = game.get_img(img_name)
+    bot.send_photo(chat_id, photo=game.resize_image(f"img/{img_name}/{name}"))
+    users[chat_id]["last_img"] = f"{img_name}/{name}"
     users[chat_id]["answer"] = img_name
-
-def clear_img(name):
-    try:
-        os.remove(f"img/{name}")
-    except:
-        pass
 
 
 
@@ -77,7 +67,6 @@ def mes(message):
         elif users[chat_id]["in_game"] and mes == "закончить":
             bot.send_message(chat_id, "Игра закончена", reply_markup=mainMarkup)
             users[chat_id]["in_game"] = False
-            clear_img(users[chat_id]["last_img"])
 
         elif users[chat_id]["in_game"]:
             bot.send_photo(chat_id, photo=open(f'img/{users[chat_id]["last_img"]}', "rb"))
@@ -85,7 +74,6 @@ def mes(message):
                 bot.send_message(chat_id, "Правильно", reply_markup=gameMarkup)
             else:
                 bot.send_message(chat_id, f'Неправильно, это {users[chat_id]["answer"]}', reply_markup=gameMarkup)
-            clear_img(users[chat_id]["last_img"])
             send_next_img(chat_id)
 
         else:
